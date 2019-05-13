@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const $ = require('cheerio');
+const cheerio = require('cheerio');
 const url = 'https://author.today/reader/21513/153795';
 const fs = require('fs');
 
@@ -27,7 +27,11 @@ puppeteer
   function parsePage(browserPage, url) {
     return browserPage.goto(url).then(function() {
       return browserPage.content();
-    }).then(function(html) {
-      return Promise.resolve($('#text-container', html).text());
+    }).then(html => {
+      const $ = cheerio.load(html, {
+        decodeEntities: false
+      });
+      
+      return Promise.resolve($('#text-container').html());
     })
   }
